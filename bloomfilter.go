@@ -16,7 +16,11 @@ var defaultHashFn = fnv.New64a()
 // if the value is not present but will sometimes return true if the value has not
 // been set. BloomFilter is space-efficient, however, items cannot be deleted.
 type BloomFilter interface {
+	// Add adds a value to the bloom filter
 	Add(string)
+	// Check checks to see if a value has been added to the bloom filter.
+	// Check returns true if it thinks the value has been added and false
+	// if it thinks the value has not been added.
 	Check(string) bool
 }
 
@@ -49,7 +53,6 @@ func NewFromEstimate(expectedNumberOfItems int64, maxFPRate float64) BloomFilter
 	return New(optimalSize, optimalHashFns)
 }
 
-// Add adds a value to the bloom filter
 func (bf *bloomFilter) Add(value string) {
 	indexes := bf.getHashIndexes(value)
 	for _, idx := range indexes {
@@ -57,9 +60,6 @@ func (bf *bloomFilter) Add(value string) {
 	}
 }
 
-// Check checks to see if a value has been added to the bloom filter.
-// Check returns true if it thinks the value has been added and false
-// if it thinks the value has not been added.
 func (bf *bloomFilter) Check(value string) bool {
 	indexes := bf.getHashIndexes(value)
 	for _, idx := range indexes {
