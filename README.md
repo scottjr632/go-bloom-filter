@@ -15,8 +15,7 @@ import "github.com/scottjr632/go-bloom-filter"
 
 ## Creating a new optimal filter 
 ```go
-estimatedNumberOfItems := 3000
-maxFailureRate := 0.01
+estimatedNumberOfItems, maxFailureRate := 3000, 0.01
 bf := bloomfilter.NewFromEstimate(estimatedNumberOfItems, maxFailureRate)
 ```
 
