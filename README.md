@@ -3,26 +3,38 @@
 
 Simple bloom filter implementation for the GoLang programming language  
 
-## Creating a new filter
+## Installing
+```bash
+go get github.com/scottjr632/go-bloom-filter
+```
+
+### Importing
 ```go
-sizeOfFilter, numHashFns := 128, 3
-bf := bloomfilter.New(sizeOfFilter, numHashFns)
+import "github.com/scottjr632/go-bloom-filter"
 ```
 
 ## Creating a new optimal filter 
 ```go
 estimatedNumberOfItems := 3000
 maxFailureRate := 0.01
-bf := NewFromEstimate(estimatedNumberOfItems, maxFailureRate)
+bf := bloomfilter.NewFromEstimate(estimatedNumberOfItems, maxFailureRate)
 ```
 
-### Adding a value to the filter
+### Creating a new filter
+```go
+sizeOfFilter, numHashFns := 128, 3
+bf := bloomfilter.New(sizeOfFilter, numHashFns)
+```
+
+## Handling values
+
+#### Adding a value to the filter
 ```go
 valueToAdd := 'https://maliciousurl.xyz'
 bf.Add(valueToAdd)
 ```
 
-### Checking if value has been set
+#### Checking if a value has been set
 ```go
 valueToCheck := 'https://maliciousurl.xyz'
 bf.Check(valueToCheck) // -> true
