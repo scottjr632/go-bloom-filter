@@ -1,4 +1,5 @@
 # GoLang Bloom Filter
+[![CircleCI](https://circleci.com/gh/scottjr632/go-bloom-filter.svg?style=svg)](https://circleci.com/gh/scottjr632/go-bloom-filter)  
 Simple bloom filter implementation for the GoLang programming language
 
 ## Creating a new filter
