@@ -1,5 +1,6 @@
-# GoLang Bloom Filter
+# GoLang Bloom Filter 
 Simple bloom filter implementation for the GoLang programming language  
+
 [![codecov](https://codecov.io/gh/scottjr632/go-bloom-filter/branch/master/graph/badge.svg)](https://codecov.io/gh/scottjr632/go-bloom-filter) [![CircleCI](https://circleci.com/gh/scottjr632/go-bloom-filter.svg?style=svg)](https://circleci.com/gh/scottjr632/go-bloom-filter)  
 
 ## Creating a new filter
