@@ -7,6 +7,7 @@ package bloomfilter
 import (
 	"hash"
 	"hash/fnv"
+	"log"
 	"math"
 )
 
@@ -28,7 +29,7 @@ type bloomFilter struct {
 	m int64
 	k int64
 
-	table  []bool
+	table  []uint32
 	hashFn hash.Hash64
 }
 
@@ -36,8 +37,12 @@ type bloomFilter struct {
 // m and k as arguments where m is the size of the bloom filter and k is the
 // number of hashing functions.
 func New(m, k int64) BloomFilter {
+	if m < 32 {
+		m = 32
+	}
 	bf := &bloomFilter{m: m, k: k}
-	bf.table = make([]bool, m)
+	len := m / 32
+	bf.table = make([]uint32, len+1)
 	bf.hashFn = defaultHashFn
 	return bf
 }
@@ -56,20 +61,35 @@ func NewFromEstimate(expectedNumberOfItems int64, maxFPRate float64) BloomFilter
 func (bf *bloomFilter) Add(value string) {
 	indexes := bf.getHashIndexes(value)
 	for _, idx := range indexes {
-		bf.table[idx] = true
+		bfSetBit(bf.table, uint32(idx))
 	}
 }
 
 func (bf *bloomFilter) Check(value string) bool {
 	indexes := bf.getHashIndexes(value)
 	for _, idx := range indexes {
-		if !bf.table[idx] {
+		if !bfTestBit(bf.table, uint32(idx)) {
 			return false
 		}
 	}
 	return true
 }
 
+func bfSetBit(m []uint32, k uint32) {
+	var flag uint32 = 1
+
+	i := k / 32
+	pos := k % 32
+	flag = flag << pos
+	m[i] = m[i] | flag
+}
+
+func bfTestBit(m []uint32, k uint32) bool {
+	var flag uint32 = 1
+	return (m[k/32] & (flag << (k % 32))) != 0
+}
+
+// returns the optimal bit size
 func estimateOptimalSize(expectedNumberOfItems int64, maxFPRate float64) (optimalSize int64) {
 	numerator := float64(expectedNumberOfItems) * math.Abs(math.Log(maxFPRate))
 	denom := math.Pow(math.Log(2), 2)
@@ -99,12 +119,13 @@ func hashValue(value string, k int64, hashFn hash.Hash64) (uint32, uint32) {
 	return h1, h2
 }
 
-func (bf *bloomFilter) getHashIndexes(value string) []uint32 {
-	var indexes []uint32
+func (bf *bloomFilter) getHashIndexes(value string) []int {
+	var indexes []int
 	h1, h2 := hashValue(value, bf.k, bf.hashFn)
 	for i := 0; int64(i) < bf.k; i++ {
 		idx := (h1 + uint32(i)*h2) % uint32(bf.m)
-		indexes = append(indexes, idx)
+		indexes = append(indexes, int(idx))
 	}
+	log.Println(indexes)
 	return indexes
 }
