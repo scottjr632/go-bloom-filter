@@ -7,7 +7,6 @@ package bloomfilter
 import (
 	"hash"
 	"hash/fnv"
-	"log"
 	"math"
 )
 
@@ -126,6 +125,5 @@ func (bf *bloomFilter) getHashIndexes(value string) []int {
 		idx := (h1 + uint32(i)*h2) % uint32(bf.m)
 		indexes = append(indexes, int(idx))
 	}
-	log.Println(indexes)
 	return indexes
 }
