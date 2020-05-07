@@ -17,6 +17,16 @@ func TestCanMakeOptimalBloomFilter(t *testing.T) {
 	}
 }
 
+func TestCanMakeFilterUnder32(t *testing.T) {
+	v := "test"
+	bf := New(10, 2)
+	bf.Add(v)
+
+	if !bf.Check(v) {
+		t.Error("value was set but not found")
+	}
+}
+
 func TestCanAddToFilter(t *testing.T) {
 	v := "test"
 	bf := New(100, 2)
